@@ -25,7 +25,7 @@ dev-dependencies = [
 
 # https://rye.astral.sh/guide/pyproject/#toolryescripts
 [tool.rye.scripts]
-precommit = { chain = ["lint", "format" ] }
+precommit = { chain = ["lint", "format", "test" ] }
 "lint" = "ruff check --fix ."
 "format" = "ruff format ."
 "test" = "pytest ."
