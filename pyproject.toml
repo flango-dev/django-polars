@@ -1,0 +1,91 @@
+[project]
+name = "django-polars"
+version = "0.1.0"
+description = "Integration of Polars into Django"
+authors = [
+    { name = "Florian Kromer", email = "kromer-florian@protonmail.com" }
+]
+dependencies = [
+    "polars>=0.20.31",
+]
+readme = "README.md"
+requires-python = ">= 3.12"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# https://rye.astral.sh/guide/pyproject/
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.4.9",
+    "pytest>=8.2.2",
+]
+
+# https://rye.astral.sh/guide/pyproject/#toolryescripts
+[tool.rye.scripts]
+precommit = { chain = ["lint", "format" ] }
+"lint" = "ruff check --fix ."
+"format" = "ruff format ."
+"test" = "pytest ."
+
+# https://hatch.pypa.io/latest/config/metadata/#metadata-options
+[tool.hatch.metadata]
+allow-direct-references = true
+
+# https://hatch.pypa.io/latest/config/build/
+[tool.hatch.build.targets.wheel]
+packages = ["src/django_polars"]
+
+# https://docs.astral.sh/ruff/configuration/
+# https://docs.astral.sh/ruff/settings/
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+line-length = 88
+indent-width = 4
+target-version = "py312"
+
+# https://docs.astral.sh/ruff/linter/
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+ignore = []
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# https://docs.astral.sh/ruff/formatter/
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
