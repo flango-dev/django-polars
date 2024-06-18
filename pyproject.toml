@@ -1,7 +1,7 @@
 [project]
 name = "django-polars"
-version = "0.1.0"
-description = "Integration of Polars into Django"
+version = "0.1.0.dev3"
+description = "High performance dataframes with Django ORM integration."
 authors = [
     { name = "Florian Kromer", email = "kromer-florian@protonmail.com" }
 ]
@@ -10,6 +10,20 @@ dependencies = [
 ]
 readme = "README.md"
 requires-python = ">= 3.12"
+license = { file = "LICENSE" }
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Framework :: Django",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.12",
+]
+[project.urls]
+Repository = "https://github.com/flango-dev/django-polars"
+Documentation = "https://github.com/flango-dev/django-polars/blob/main/README.md"
+Changelog = "https://github.com/flango-dev/django-polars/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]
@@ -26,9 +40,12 @@ dev-dependencies = [
 # https://rye.astral.sh/guide/pyproject/#toolryescripts
 [tool.rye.scripts]
 precommit = { chain = ["lint", "format", "test" ] }
-"lint" = "ruff check --fix ."
-"format" = "ruff format ."
-"test" = "pytest ."
+release = { chain = ["build", "publish"] }
+"lint" = "rye lint --fix"
+"format" = "rye fmt"
+"test" = "rye test"
+"build" = "rye build --clean"
+"publish" = "rye publish"
 
 # https://hatch.pypa.io/latest/config/metadata/#metadata-options
 [tool.hatch.metadata]
