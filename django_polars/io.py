@@ -4,10 +4,10 @@ from polars.type_aliases import ConnectionOrCursor
 
 
 def read_frame(
-    con: ConnectionOrCursor, qs: QuerySet, drop_idx: bool = True
+    con: ConnectionOrCursor, qs: QuerySet, drop_id: bool = True
 ) -> DataFrame:
     raw_sql = qs.query.__str__()
     df = read_database(query=raw_sql, connection=con)
-    if drop_idx:
+    if drop_id:
         df.drop_in_place("id")
     return df

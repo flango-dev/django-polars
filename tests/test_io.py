@@ -68,7 +68,7 @@ def test_df_builtin_field_type_model_df_roundtrip(builtin_field_model_dataframe)
     s = pl.Series("id", [1, 2])
     builtin_field_model_dataframe.insert_column(0, s)
     df_out_1 = read_frame(
-        con=connection, qs=BuiltinFieldModel.objects.filter(int=1), drop_idx=False
+        con=connection, qs=BuiltinFieldModel.objects.filter(int=1), drop_id=False
     )
     assert_frame_equal(builtin_field_model_dataframe.slice(0, 1), df_out_1)
 
@@ -76,7 +76,7 @@ def test_df_builtin_field_type_model_df_roundtrip(builtin_field_model_dataframe)
 @pytest.mark.django_db
 def test_pk_model_to_df(pk_builtin_field_model_fixture, builtin_field_model_dataframe):
     df_out = read_frame(
-        con=connection, qs=PkBuiltinFieldModel.objects.all(), drop_idx=False
+        con=connection, qs=PkBuiltinFieldModel.objects.all(), drop_id=False
     )
     assert_frame_equal(builtin_field_model_dataframe, df_out)
 
