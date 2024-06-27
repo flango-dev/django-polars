@@ -1,6 +1,6 @@
 [project]
 name = "django-polars"
-version = "0.1.0.dev3"
+version = "0.2.0"
 description = "High performance dataframes with Django ORM integration."
 authors = [
     { name = "Florian Kromer", email = "kromer-florian@protonmail.com" }
@@ -12,7 +12,7 @@ readme = "README.md"
 requires-python = ">= 3.12"
 license = { file = "LICENSE" }
 classifiers = [
-  "Development Status :: 1 - Planning",
+  "Development Status :: 4 - Beta",
   "Framework :: Django",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
@@ -33,8 +33,12 @@ build-backend = "hatchling.build"
 [tool.rye]
 managed = true
 dev-dependencies = [
+    "django>=5.0.0",
+    "django-stubs>=5.0.0",
     "ruff>=0.4.9",
+    "mypy>=1.10.1",
     "pytest>=8.2.2",
+    "pytest-django>=4.8.0",
 ]
 
 # https://rye.astral.sh/guide/pyproject/#toolryescripts
@@ -42,6 +46,7 @@ dev-dependencies = [
 precommit = { chain = ["lint", "format", "test" ] }
 release = { chain = ["build", "publish"] }
 "lint" = "rye lint --fix"
+typing = "rye run mypy django_polars tests"
 "format" = "rye fmt"
 "test" = "rye test"
 "build" = "rye build --clean"
@@ -53,7 +58,7 @@ allow-direct-references = true
 
 # https://hatch.pypa.io/latest/config/build/
 [tool.hatch.build.targets.wheel]
-packages = ["src/django_polars"]
+packages = ["django_polars"]
 
 # https://docs.astral.sh/ruff/configuration/
 # https://docs.astral.sh/ruff/settings/
@@ -106,3 +111,7 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 docstring-code-format = false
 docstring-code-line-length = "dynamic"
+
+# https://pytest-django.readthedocs.io/en/latest/configuring_django.html#pyproject-toml-settings
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
