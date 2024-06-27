@@ -11,3 +11,5 @@
 -e file:.
 polars==0.20.31
     # via django-polars
+sqlglot==25.3.3
+    # via django-polars

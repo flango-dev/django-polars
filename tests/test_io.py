@@ -2,6 +2,7 @@ import polars as pl
 import pytest
 from django.db import connection
 from polars.testing import assert_frame_equal
+from sqlglot.errors import ParseError
 
 from django_polars.io import read_frame
 from tests.models import BuiltinFieldModel, PkBuiltinFieldModel, View
@@ -62,13 +63,13 @@ def test_df_builtin_field_type_model_df_roundtrip(builtin_field_model_dataframe)
             text=cols["text"],
         )
 
-    df_out = read_frame(con=connection, qs=BuiltinFieldModel.objects.filter(int=1))
+    df_out = read_frame(con=connection, sel=BuiltinFieldModel.objects.filter(int=1))
     assert_frame_equal(builtin_field_model_dataframe.slice(0, 1), df_out)
 
     s = pl.Series("id", [1, 2])
     builtin_field_model_dataframe.insert_column(0, s)
     df_out_1 = read_frame(
-        con=connection, qs=BuiltinFieldModel.objects.filter(int=1), drop_id=False
+        con=connection, sel=BuiltinFieldModel.objects.filter(int=1), drop_id=False
     )
     assert_frame_equal(builtin_field_model_dataframe.slice(0, 1), df_out_1)
 
@@ -76,9 +77,30 @@ def test_df_builtin_field_type_model_df_roundtrip(builtin_field_model_dataframe)
 @pytest.mark.django_db
 def test_pk_model_to_df(pk_builtin_field_model_fixture, builtin_field_model_dataframe):
     df_out = read_frame(
-        con=connection, qs=PkBuiltinFieldModel.objects.all(), drop_id=False
+        con=connection, sel=PkBuiltinFieldModel.objects.all(), drop_id=False
     )
     assert_frame_equal(builtin_field_model_dataframe, df_out)
+
+
+@pytest.mark.django_db
+def test_sql_to_df(builtin_field_model_fixture, builtin_view_dataframe):
+    df = read_frame(
+        con=connection,
+        sel="select id, bigint, float, decimal from tests_builtinfieldmodel;",
+    )
+    assert_frame_equal(
+        builtin_view_dataframe,
+        df,
+    )
+
+
+@pytest.mark.django_db
+def test_invalid_sql_to_df_raises_exception():
+    with pytest.raises(ParseError):
+        read_frame(
+            con=connection,
+            sel="selct id, bigint, float, decimal from tests_builtinfieldmodel;",
+        )
 
 
 @pytest.mark.django_db
@@ -90,6 +112,6 @@ def test_view_to_df(builtin_view_dataframe, builtin_field_model_fixture):
             "CREATE VIEW view AS SELECT id, bigint, float, decimal FROM tests_builtinfieldmodel;"
         )
 
-    df_out = read_frame(con=connection, qs=View.objects.all())
+    df_out = read_frame(con=connection, sel=View.objects.all())
 
     assert_frame_equal(builtin_view_dataframe, df_out)
